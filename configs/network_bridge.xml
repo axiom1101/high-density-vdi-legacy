@@ -1,0 +1,11 @@
+<!--
+Placeholder configuration.
+
+Network bridge was configured manually via:
+- brctl
+- ip
+- virsh net-define (inline)
+- dnsmasq
+
+This file is intentionally left empty.
+-->
