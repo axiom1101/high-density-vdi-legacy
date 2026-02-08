@@ -1,117 +1,104 @@
 # high-density-vdi-legacy
 
-Этот репозиторий — архив практической инженерной работы,  
-связанной с развёртыванием и эксплуатацией Windows-окружений  
-для графических и тестовых приложений в условиях жёстких аппаратных ограничений.
+This repository is an archive of **practical engineering work** focused on deploying and operating Windows environments for graphical and test applications under strict hardware constraints.
 
-Проект отражает реальный путь: от домашней KVM-лаборатории  
-до эксплуатации Windows на bare-metal серверах без аппаратной KVM-консоли.
+The project reflects a real-world journey: from a home KVM laboratory to operating Windows on **bare-metal servers** without physical KVM console access.
 
 ---
 
-## Что это
+## What This Is
 
-- набор **сырых команд**, конфигураций и заметок  
-- накопленных в ходе **экспериментальной и прикладной эксплуатации**  
-- без попытки выдать это за enterprise-решение или облачную платформу
+- A collection of **raw commands**, configurations, and notes.
+- Knowledge accumulated during **experimental and applied operations**.
+- A solution built for specific constraints, not an attempt to mimic enterprise cloud platforms.
 
-Здесь сохранены:  
-- рабочие конфигурации  
-- неудачные попытки  
-- костыли  
-- ограничения железа  
-- реальные ошибки и способы их обхода
-
----
-
-## Чего здесь нет
-
-- Kubernetes  
-- Terraform / Ansible  
-- автоматических пайплайнов  
-- универсальных best practices  
-- «идеальной» архитектуры
-
-Это **не SaaS**, не облако и не DevOps-витрина.
+Preserved here are:
+- Working configurations
+- Failed experiments
+- Workarounds ("crutches")
+- Hardware limitations
+- Real-world errors and their fixes
 
 ---
 
-## Основные среды
+## What This Is NOT
 
-### 1. Домашняя лаборатория
-- Linux (Debian / Ubuntu)  
-- KVM / QEMU / libvirt  
-- virt-install, virt-clone  
-- Spice / QXL  
-- LVM-backed storage
+- Kubernetes
+- Terraform / Ansible
+- CI/CD Pipelines
+- Universal "Best Practices"
+- "Ideal" Architecture
 
-Использовалась для:  
-- тестирования Windows (XP / 7 / 10)  
-- подбора драйверов VirtIO  
-- экспериментов с CPU topology, VRAM, сетью  
-- подготовки образов и конфигураций
-
-### 2. Выделенные серверы (Hetzner)
-- Bare metal  
-- Установка Windows через Rescue System  
-- QEMU + VNC поверх физического диска  
-- Windows Server 2016 / Windows 10  
-- Terminal Services (RDP)
-
-Использовались для:  
-- реальной нагрузки  
-- проверки плотности RDP-сессий  
-- запуска графических приложений без выделенных GPU
+This is **not SaaS**, not a Cloud platform, and not a DevOps showcase.
 
 ---
 
-## Структура репозитория
+## Environments
 
-- [`docs/`](docs/) — документация, контекст, эксперименты и журнал проблем:
-  - `00_context_and_scope.md` — честная рамка проекта  
-  - `01_hetzner_bare_metal_deployment.md` — пошаговый runbook по дедикам  
-  - `02_kvm_home_lab_setup.md` — настройка домашнего KVM-кластера  
-  - `03_windows_optimization_guide.md` — оптимизация Windows для высокой плотности RDP  
-  - `98_experiments_and_variants.md` — перебор вариантов и R&D  
-  - `99_known_issues_and_fixes.md` — журнал ошибок и способов их обхода
+### 1. Home Laboratory (R&D)
+- **Stack:** Linux (Debian / Ubuntu), KVM / QEMU / libvirt, Spice / QXL, LVM-backed storage.
+- **Tools:** `virt-install`, `virt-clone`.
+- **Purpose:**
+  - Testing Windows versions (XP / 7 / 10).
+  - Finding optimal VirtIO drivers.
+  - Experiments with CPU topology, VRAM, and networking.
+  - Preparing master images.
 
-- [`scripts/`](scripts/) — сырые командные последовательности:
-  - `hetzner_rescue_install.sh` — развертывание Windows на выделенном сервере через RAM-диск  
-  - `kvm_host_provision.sh` — подготовка Linux-хоста для виртуализации  
-  - `vm_create_commands.sh` — коллекция virt-install команд для домашних VM
-
-- [`configs/`](configs/) — XML-фрагменты libvirt и сетевые конфигурации:
-  - `network_bridge.xml` — мостовая сеть для виртуальных машин  
-  - `vm_domain_tuning.xml` — тонкая настройка CPU, GPU и памяти
-
----
-
-## Важное замечание
-
-Репозиторий сохранён **в историческом виде**.  
-
-Некоторые решения:  
-- устарели  
-- небезопасны  
-- неоптимальны по современным меркам
-
-Они оставлены намеренно, чтобы показать:  
-- реальные ограничения  
-- ход инженерного мышления  
-- эволюцию решений во времени
+### 2. Dedicated Servers (Hetzner Production)
+- **Stack:** Bare Metal Hardware, QEMU + VNC (Rescue System), Windows Server 2016 / Windows 10.
+- **Architecture:** Terminal Services (RDP) directly on hardware.
+- **Purpose:**
+  - Handling real production loads.
+  - Testing RDP session density.
+  - Running 3D applications without dedicated GPUs (software/iGPU rendering).
 
 ---
 
-## Назначение репозитория
+## Repository Structure
 
-- портфолио  
-- технический архив  
-- база для восстановления среды  
-- демонстрация практического опыта работы с low-level инфраструктурой
+- [`docs/`](docs/) — Documentation, context, experiments, and issue logs:
+  - `00_context_and_scope.md` — Project scope and honest constraints.
+  - `01_hetzner_bare_metal_deployment.md` — Step-by-step runbook for dedicated servers.
+  - `02_kvm_home_lab_setup.md` — Home KVM cluster setup guide.
+  - `03_windows_optimization_guide.md` — Windows tuning for high-density RDP.
+  - `98_experiments_and_variants.md` — R&D log: variants tested and rejected.
+  - `99_known_issues_and_fixes.md` — Log of errors and workarounds.
+
+- [`scripts/`](scripts/) — Raw command sequences:
+  - `hetzner_rescue_install.sh` — Deploying Windows to bare metal via RAM-disk & QEMU.
+  - `kvm_host_provision.sh` — Preparing a Linux host for virtualization.
+  - `vm_create_commands.sh` — Collection of legacy `virt-install` commands.
+
+- [`configs/`](configs/) — Libvirt XML fragments and network configs:
+  - `network_bridge.xml` — Bridge network definition.
+  - `vm_domain_tuning.xml` — Fine-tuning for CPU pinning, GPU, and memory.
 
 ---
 
-## Лицензия / использование
+## Important Note / Disclaimer
 
-Свободное изучение.  
-Использование — на свой риск.  
+This repository is preserved in its **historical state** (2014-2018).
+
+Some solutions presented here are:
+- Outdated
+- Potentially insecure by modern standards
+- Sub-optimal for general use
+
+They are left intentionally to demonstrate:
+- Real-world constraints of the time.
+- The engineering thought process.
+- The evolution of solutions.
+
+---
+
+## Purpose of Repository
+
+- Portfolio / Technical Archive.
+- Base for environment recovery.
+- Demonstration of practical experience with low-level infrastructure.
+
+---
+
+## License
+
+For educational use. Use at your own risk.
